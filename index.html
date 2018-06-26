@@ -16,27 +16,29 @@
         <nav class="navbar navbar-dark bg-info">
             <span class="mb-0 h3">Rock Paper Scissor</span>
         </nav>
-        <!-- <div class="title">
-        <h2></h2>
-        <p></p>
-        </div> -->
+        <div class="title">
+            <input type="text" class="col-sm-9" id="name-box" placeholder="Name">
+            <button type="submit" class="btn btn-info btn-sm col-sm-3" id="start-button">Start</button>
+            <h2></h2>
+            <p></p>
+        </div>
 
         <div class="row">
-            <div class="col-sm-4">
-                Player 1
+            <div class="col-sm-4 player1-box" id="player1">
+                Waiting for Player 1
             </div>
-            <div class="col-sm-4">
-                Score
+            <div class="col-sm-4" id="game-status">
+
             </div>
-            <div class="col-sm-4">
-                Player 2
+            <div class="col-sm-4 player2-box" id="player2">
+                Waiting for Player 2
             </div>
         </div>
 
-        <div class="message-box"></div>
+        <div class="chat-area"></div>
         <div class="send-box">
-            <input type="text" class="col-sm-10 text-box">
-            <button class="send-btn col-sm-2">Send</button>
+            <input type="text" class="col-sm-10" id="message-input">
+            <button type="submit" class="btn btn-info btn-sm send-btn col-sm-2">Send</button>
         </div>
 
     </div>
@@ -48,7 +50,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-    <script src="./assets/javascript/game.js"></script>
+    <script src="./assets/javascript/app.js"></script>
 </body>
 
 </html>
