@@ -20,6 +20,12 @@
     text-align: center;
     border: 2px solid rgb(219, 217, 214);
     font-size: 15px;
+    display: flex;
+    flex-direction: column; 
+}
+button {
+    /* width: 150px; */
+    margin-bottom: 2px;
 }
 
 .chat-area {
