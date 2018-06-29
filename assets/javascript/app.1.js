@@ -38,7 +38,7 @@ $(function () {
             let player2Name = player2Div.val();
             DATABASE.ref('/player2').push({
                 name: player2Name,
-                //choice: player2Choice
+                choice: player2Choice
             });
 
         } else {
@@ -51,7 +51,7 @@ $(function () {
              
             DATABASE.ref('/player1').push({
                 name: player1Name,
-                //choice: player1Choice,
+                choice: player1Choice,
             });
 
         }
@@ -62,11 +62,6 @@ $(function () {
         player1Choice = $(this).val();
         console.log('player 1 just selected ...' + player1Choice);
         $('.player1-box').html(player1Choice);
-
-        DATABASE.ref('/player1').push({
-            //name: player1Name,
-            choice: player1Choice
-        });
     })
 
     $('.player2-box').on('click', 'button', function () {
@@ -74,18 +69,10 @@ $(function () {
         player2Choice = $(this).val();
         console.log('player 2 just selected ...' + player2Choice);
         $('.player2-box').html(player2Choice);
-
-        DATABASE.ref('/player2').push({
-            //name: player2Name,
-            choice: player2Choice
-        });
     })
     console.log('this is outside comparechoices function...')
     compareChoices(player1Choice, player2Choice);
 
-    function pullData(){
-        
-    }
     function compareChoices(p1Choice, p2Choice) {
         console.log('this is inside comparechoices function...')
 
