@@ -7,6 +7,9 @@ $(function () {
     let losses = 0;
     let tie = 0;
     let gameStatus = $('#game-status');
+    let player1Name = '';
+    let player2Name = '';
+    let activePlayer = '';
 
     // configure Firebase
     var config = {
@@ -22,9 +25,10 @@ $(function () {
 
     // initialize an instance of the DB
     const DATABASE = firebase.database();
+
     $('#start-button').on('focus', function () {
-        let player1Name = '';
-        let player2Name = '';
+        // let player1Name = '';
+        // let player2Name = '';
 
 
         event.preventDefault();
@@ -57,50 +61,82 @@ $(function () {
             });
         }
     });
+
     $('.player1-box').on('click', 'button', function () {
         player1Choice = $(this).val();
         console.log('player 1 just selected ...' + player1Choice);
-        $('.player1-box').html(player1Choice);
+        // $('.player1-box').html(player1Choice);
+
+        activePlayer = player1Name;
+        console.log('active player - ' + activePlayer);
+
         DATABASE.ref('/player1').push({
             //name: player1Name,
             player1Choice: player1Choice
         });
+
+        pullData(activePlayer);
     })
+
     $('.player2-box').on('click', 'button', function () {
         player2Choice = $(this).val();
         console.log('player 2 just selected ...' + player2Choice);
         $('.player2-box').html(player2Choice);
+
+        activePlayer = player2Name;
+        console.log('active player - ' + activePlayer);
+
         DATABASE.ref('/player2').push({
             player2Choice: player2Choice
         });
+
+        pullData(activePlayer);
     })
     // console.log('this is outside comparechoices function...')
     // compareChoices(player1Choice, player2Choice);
 
-    pullData();
-    
-    function pullData() {
+
+    function pullData(player) {
+
+        console.log('current players name - ' + player);
         // Firebase watcher + initial loader HINT: .on("value")
-        DATABASE.ref('/player1').on("child_added", function (snapshot) {
-            // Log everything that's coming out of snapshot
-            //console.log(snapshot.val());
-            let child = snapshot.val();
-            console.log('snapshot player1Name: ' + child.player1Name);
-            console.log('snapshot player1Choice: ' + snapshot.val().player1Choice);
+        let child = '';
 
-            console.log('snapshot player2Name: ' + snapshot.val().player2Name);
-            console.log('snapshot player2Choice: ' + snapshot.val().player2Choice);
+        if (player === player1Name) {
+            DATABASE.ref('/player1').on("child_added", function (snapshot) {
+                // Log everything that's coming out of snapshot
+                console.log(snapshot.val());
+                
+                player1Choice = snapshot.val().player1Choice;
+                //add to the HTML 
+                $('.player1-box').html(snapshot.val().player1Choice);
 
-            // Change the HTML to reflect
-            // $("#name-display").text(snapshot.val().name);
-            // $("#email-display").text(snapshot.val().email);
-            // $("#age-display").text(snapshot.val().age);
-            // $("#comment-display").text(snapshot.val().comment);
-            // Handle the errors
-        }, function (errorObject) {
-            console.log("Errors handled: " + errorObject.code);
-        });
-    }
+                console.log('snapshot player1Choice: ' + snapshot.val().player1Choice);
+            })
+        } else if (player === player2Name) {
+            DATABASE.ref('/player2').on("child_added", function (snapshot) {
+                //console.log('snapshot player2Name: ' + snapshot.val().player2Name);
+
+                player2Choice = snapshot.val().player2Choice;
+                $('.player2-box').html(snapshot.val().player2Choice);
+
+                console.log('snapshot player2Choice: ' + snapshot.val().player2Choice);
+
+
+            })
+
+
+        } else {
+            return;
+        }
+
+        compareChoices(player1Choice, player2Choice)
+
+    };
+    // , function (errorObject) {
+    //     console.log("Errors handled: " + errorObject.code);
+
+    // }
     function compareChoices(p1Choice, p2Choice) {
         console.log('this is inside comparechoices function...')
         let r = 'rock';
