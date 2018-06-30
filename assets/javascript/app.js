@@ -94,6 +94,8 @@ $(function () {
 
         let count = 0;
         console.log('pull data player 2 ' + count + ' time')
+
+        debugger
         pullData(activePlayer);
     })
     // console.log('this is outside comparechoices function...')
@@ -116,6 +118,7 @@ $(function () {
                 $('.player1-box').html(player1Choice);
 
                 console.log('snapshot player1Choice: ' + player1Choice);
+                // compareChoices(player1Choice, player2Choice)
             })
         } else if (player === player2Name) {
             DATABASE.ref('/player2').on("child_added", function (snapshot) {
@@ -125,16 +128,18 @@ $(function () {
                 $('.player2-box').html(player2Choice);
 
                 console.log('snapshot player2Choice: ' + player2Choice);
-
+                // compareChoices(player1Choice, player2Choice)
 
             })
 
 
-        } else {
-            return;
+        } 
+        // else {
+        //     return;
+        // }
+        if (player1Choice !== '' && player2Choice !== '') {
+            compareChoices(player1Choice, player2Choice)
         }
-
-        compareChoices(player1Choice, player2Choice)
 
     };
     // , function (errorObject) {
@@ -148,7 +153,7 @@ $(function () {
         let s = 'scissor';
         let selection = p1Choice + '-' + p2Choice;
         console.log('selection... ' + selection)
-        
+
         if (selection === 'rock-scissor' || selection === 'scissor-paper' || selection === 'paper-rock') {
             console.log('player 1 wins...' + p1Choice);
         } else if (selection === 'rock-rock' || selection === 'scissor-scissor' || selection === 'paper-paper') {
