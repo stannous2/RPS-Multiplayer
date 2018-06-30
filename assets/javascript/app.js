@@ -64,7 +64,7 @@ $(function () {
 
     $('.player1-box').on('click', 'button', function () {
         player1Choice = $(this).val();
-        console.log('player 1 just selected ...' + player1Choice);
+        //console.log('player 1 just selected ...' + player1Choice);
         // $('.player1-box').html(player1Choice);
 
         activePlayer = player1Name;
@@ -75,13 +75,15 @@ $(function () {
             player1Choice: player1Choice
         });
 
+        let count = 0;
+        console.log('pull data player 1 ' + count + ' time')
         pullData(activePlayer);
     })
 
     $('.player2-box').on('click', 'button', function () {
         player2Choice = $(this).val();
-        console.log('player 2 just selected ...' + player2Choice);
-        $('.player2-box').html(player2Choice);
+        //console.log('player 2 just selected ...' + player2Choice);
+        // $('.player2-box').html(player2Choice);
 
         activePlayer = player2Name;
         console.log('active player - ' + activePlayer);
@@ -90,6 +92,8 @@ $(function () {
             player2Choice: player2Choice
         });
 
+        let count = 0;
+        console.log('pull data player 2 ' + count + ' time')
         pullData(activePlayer);
     })
     // console.log('this is outside comparechoices function...')
@@ -105,22 +109,22 @@ $(function () {
         if (player === player1Name) {
             DATABASE.ref('/player1').on("child_added", function (snapshot) {
                 // Log everything that's coming out of snapshot
-                console.log(snapshot.val());
+                //console.log(snapshot.val());
                 
                 player1Choice = snapshot.val().player1Choice;
                 //add to the HTML 
-                $('.player1-box').html(snapshot.val().player1Choice);
+                $('.player1-box').html(player1Choice);
 
-                console.log('snapshot player1Choice: ' + snapshot.val().player1Choice);
+                console.log('snapshot player1Choice: ' + player1Choice);
             })
         } else if (player === player2Name) {
             DATABASE.ref('/player2').on("child_added", function (snapshot) {
                 //console.log('snapshot player2Name: ' + snapshot.val().player2Name);
 
                 player2Choice = snapshot.val().player2Choice;
-                $('.player2-box').html(snapshot.val().player2Choice);
+                $('.player2-box').html(player2Choice);
 
-                console.log('snapshot player2Choice: ' + snapshot.val().player2Choice);
+                console.log('snapshot player2Choice: ' + player2Choice);
 
 
             })
@@ -142,14 +146,15 @@ $(function () {
         let r = 'rock';
         let p = 'paper';
         let s = 'scissor';
-        let selection = p1Choice + p2Choice;
+        let selection = p1Choice + '-' + p2Choice;
         console.log('selection... ' + selection)
-        if (selection === 'rs' || selection === 'sp' || selection === 'pr') {
+        
+        if (selection === 'rock-scissor' || selection === 'scissor-paper' || selection === 'paper-rock') {
             console.log('player 1 wins...' + p1Choice);
-        } else if (selection === 'rr' || selection === 'ss' || selection === 'pp') {
+        } else if (selection === 'rock-rock' || selection === 'scissor-scissor' || selection === 'paper-paper') {
             tie++;
             console.log('it is a tie: ' + userChoice);
-        } else if (selection === 'rp' || selection === 'sr' || selection === 'ps') {
+        } else if (selection === 'rock-paper' || selection === 'scissor-rock' || selection === 'paper-scissor') {
             losses++;
             console.log('you lose: ' + userChoice);
         }
