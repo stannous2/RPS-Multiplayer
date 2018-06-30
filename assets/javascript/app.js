@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
     let player1Div = $('#player1');
     let player1Choice = '';
     let player2Div = $('#player2');
@@ -7,7 +7,7 @@ $(function() {
     let losses = 0;
     let tie = 0;
     let gameStatus = $('#game-status');
-   
+
     // configure Firebase
     var config = {
         apiKey: "AIzaSyDBGKGEFQ8Ue3jp9xgJGqCtqVjyjW1knqE",
@@ -22,7 +22,7 @@ $(function() {
 
     // initialize an instance of the DB
     const DATABASE = firebase.database();
-    $('#start-button').on('focus', function() {
+    $('#start-button').on('focus', function () {
         let player1Name = '';
         let player2Name = '';
 
@@ -34,65 +34,73 @@ $(function() {
             console.log('player 2 name - ' + player2Name);
 
             generateGameOptions(player2Div);
-            
+
             //reset the input box
             $('.name-box').val('');
-            
+
             DATABASE.ref('/player2').push({
-                name: player2Name,
+                player2Name: player2Name,
             });
         } else {
             //let player1Name = player1Div.html($('.name-box').val());
             player1Div.html($('.name-box').val());
-            player1Name = player1Div.html();            
+            player1Name = player1Div.html();
             console.log('player 1 name - ' + player1Name);
 
             generateGameOptions(player1Div);
 
-            //reset the input box
+            //reset the input box after a player clicks start
             $('.name-box').val('');
-           
+
             DATABASE.ref('/player1').push({
-                name: player1Name,
+                player1Name: player1Name,
             });
         }
     });
-    $('.player1-box').on('click', 'button', function() {
+    $('.player1-box').on('click', 'button', function () {
         player1Choice = $(this).val();
         console.log('player 1 just selected ...' + player1Choice);
         $('.player1-box').html(player1Choice);
         DATABASE.ref('/player1').push({
             //name: player1Name,
-            choice: player1Choice
+            player1Choice: player1Choice
         });
     })
-    $('.player2-box').on('click', 'button', function() {
+    $('.player2-box').on('click', 'button', function () {
         player2Choice = $(this).val();
         console.log('player 2 just selected ...' + player2Choice);
         $('.player2-box').html(player2Choice);
         DATABASE.ref('/player2').push({
-            choice: player2Choice
+            player2Choice: player2Choice
         });
     })
     // console.log('this is outside comparechoices function...')
     // compareChoices(player1Choice, player2Choice);
-    // Firebase watcher + initial loader HINT: .on("value")
-    DATABASE.ref().on("child_added", function(snapshot) {
-        // Log everything that's coming out of snapshot
-        console.log(snapshot.val());
-        console.log(snapshot.val().name);
-        console.log(snapshot.val().choice);
 
-        // Change the HTML to reflect
-        // $("#name-display").text(snapshot.val().name);
-        // $("#email-display").text(snapshot.val().email);
-        // $("#age-display").text(snapshot.val().age);
-        // $("#comment-display").text(snapshot.val().comment);
-        // Handle the errors
-    }, function(errorObject) {
-        console.log("Errors handled: " + errorObject.code);
-    });
+    pullData();
+    
+    function pullData() {
+        // Firebase watcher + initial loader HINT: .on("value")
+        DATABASE.ref('/player1').on("child_added", function (snapshot) {
+            // Log everything that's coming out of snapshot
+            //console.log(snapshot.val());
+            let child = snapshot.val();
+            console.log('snapshot player1Name: ' + child.player1Name);
+            console.log('snapshot player1Choice: ' + snapshot.val().player1Choice);
 
+            console.log('snapshot player2Name: ' + snapshot.val().player2Name);
+            console.log('snapshot player2Choice: ' + snapshot.val().player2Choice);
+
+            // Change the HTML to reflect
+            // $("#name-display").text(snapshot.val().name);
+            // $("#email-display").text(snapshot.val().email);
+            // $("#age-display").text(snapshot.val().age);
+            // $("#comment-display").text(snapshot.val().comment);
+            // Handle the errors
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+        });
+    }
     function compareChoices(p1Choice, p2Choice) {
         console.log('this is inside comparechoices function...')
         let r = 'rock';
