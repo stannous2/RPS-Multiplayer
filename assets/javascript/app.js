@@ -10,6 +10,7 @@ $(function () {
     let player1Name = '';
     let player2Name = '';
     let activePlayer = '';
+    let playerNum = 0;
 
     // configure Firebase
     var config = {
@@ -25,22 +26,15 @@ $(function () {
 
     // initialize an instance of the DB
     const DATABASE = firebase.database();
-
+    //create a playerRef each player
+    // let playerRef = DATABASE.ref('/players/' + playerNum);
 
     $('#start-button').on('focus', function () {
         let name = '';
         let choice = '';
         let wins = 0;
         let losses = 0;
-
-        //create a playerRef each player
-        let playerRef1 = DATABASE.ref('/players/1');
-        playerRef1.set({
-            name: null,
-            choice: null,
-            wins: 0,
-            losses: 0
-        })
+        
         event.preventDefault();
 
         if ($('#player1').html().trim() !== 'Waiting for Player 1') {
@@ -53,19 +47,20 @@ $(function () {
             //reset the input box
             $('.name-box').val('');
 
-            
+
             //create a playerRef each player
-            let playerRef = DATABASE.ref('/players/' + 2);
+            playerNum = 2;
+            let playerRef = DATABASE.ref('/players/' + playerNum);
             playerRef.set({
-                name: null,
+                name: player2Name,
                 choice: null,
                 wins: 0,
                 losses: 0
             })
 
-            DATABASE.ref(playerRef).update({
-                name: player2Name,
-            });
+            // DATABASE.ref(playerRef).update({
+            //     name: player2Name,
+            // });
         } else {
             //let player1Name = player1Div.html($('.name-box').val());
             player1Div.html($('.name-box').val());
@@ -76,19 +71,22 @@ $(function () {
 
             //reset the input box after a player clicks start
             $('.name-box').val('');
-
+            
             //create a player each player
-            let playerRef = DATABASE.ref('/players/' + 1);
+            playerNum = 1
+            let playerRef = DATABASE.ref('/players/' + playerNum);
+            console.log('playerRef - ' + playerRef);
+            
             playerRef.set({
-                name: null,
+                name: player1Name,
                 choice: null,
                 wins: 0,
                 losses: 0
             })
 
-            DATABASE.ref(playerRef).update({
-                name: player1Name,
-            });
+            // DATABASE.ref(playerRef).update({
+            //     name: player1Name,
+            // });
         }
     });
 
@@ -101,7 +99,6 @@ $(function () {
         console.log('active player - ' + activePlayer);
 
         DATABASE.ref('/players/1').update({
-            //name: player1Name,
             choice: player1Choice
         });
 
@@ -126,17 +123,15 @@ $(function () {
         // Log everything that's coming out of snapshot
         console.log(snapshot.val());
 
-        player1Choice = snapshot.val().player1Choice;
+        player1Choice = snapshot.val().choice;
         //add to the HTML 
         $('.player1-box').html(player1Choice);
 
         console.log('snapshot player1Choice: ' + player1Choice);
         // compareChoices(player1Choice, player2Choice)
 
-        console.log('player1 choice - ', player1Choice, 'player2Choice - ', player2Choice)
-
         if (typeof player1Choice === "string" && typeof player2Choice === "string") {
-            console.log("this is inside of... ");
+            console.log("this is inside of the player 1 loop... ");
 
             compareChoices(player1Choice, player2Choice)
         }
@@ -145,16 +140,14 @@ $(function () {
     DATABASE.ref('/players/2').on("child_added", function (snapshot) {
         //console.log('snapshot player2Name: ' + snapshot.val().player2Name);
 
-        player2Choice = snapshot.val().player2Choice;
+        player2Choice = snapshot.val().choice;
         $('.player2-box').html(player2Choice);
 
         console.log('snapshot player2Choice: ' + player2Choice);
         // compareChoices(player1Choice, player2Choice)
 
-        console.log('player1 choice - ', typeof player1Choice, 'player2Choice - ', typeof player2Choice)
-
         if (typeof player1Choice === "string" && typeof player2Choice === "string") {
-            console.log("this is inside of... ");
+            console.log("this is inside of the player 2 loop... ");
 
             compareChoices(player1Choice, player2Choice)
         }
