@@ -26,12 +26,23 @@ $(function () {
     // initialize an instance of the DB
     const DATABASE = firebase.database();
 
+
     $('#start-button').on('focus', function () {
-        // let player1Name = '';
-        // let player2Name = '';
+        let name = '';
+        let choice = '';
+        let wins = 0;
+        let losses = 0;
 
-
+        //create a playerRef each player
+        let playerRef1 = DATABASE.ref('/players/1');
+        playerRef1.set({
+            name: null,
+            choice: null,
+            wins: 0,
+            losses: 0
+        })
         event.preventDefault();
+
         if ($('#player1').html().trim() !== 'Waiting for Player 1') {
             player2Div.html($('.name-box').val());
             player2Name = player2Div.html();
@@ -42,8 +53,18 @@ $(function () {
             //reset the input box
             $('.name-box').val('');
 
-            DATABASE.ref('/player2').push({
-                player2Name: player2Name,
+            
+            //create a playerRef each player
+            let playerRef = DATABASE.ref('/players/' + 2);
+            playerRef.set({
+                name: null,
+                choice: null,
+                wins: 0,
+                losses: 0
+            })
+
+            DATABASE.ref(playerRef).update({
+                name: player2Name,
             });
         } else {
             //let player1Name = player1Div.html($('.name-box').val());
@@ -56,8 +77,17 @@ $(function () {
             //reset the input box after a player clicks start
             $('.name-box').val('');
 
-            DATABASE.ref('/player1').push({
-                player1Name: player1Name,
+            //create a player each player
+            let playerRef = DATABASE.ref('/players/' + 1);
+            playerRef.set({
+                name: null,
+                choice: null,
+                wins: 0,
+                losses: 0
+            })
+
+            DATABASE.ref(playerRef).update({
+                name: player1Name,
             });
         }
     });
@@ -70,14 +100,11 @@ $(function () {
         activePlayer = player1Name;
         console.log('active player - ' + activePlayer);
 
-        DATABASE.ref('/player1').push({
+        DATABASE.ref('/players/1').update({
             //name: player1Name,
-            player1Choice: player1Choice
+            choice: player1Choice
         });
 
-        let count = 0;
-        console.log('pull data player 1 ' + count + ' time')
-        pullData(activePlayer);
     })
 
     $('.player2-box').on('click', 'button', function () {
@@ -88,80 +115,68 @@ $(function () {
         activePlayer = player2Name;
         console.log('active player - ' + activePlayer);
 
-        DATABASE.ref('/player2').push({
-            player2Choice: player2Choice
+        DATABASE.ref('/players/2').update({
+            choice: player2Choice
         });
 
-        let count = 0;
-        console.log('pull data player 2 ' + count + ' time')
-
-        debugger
-        pullData(activePlayer);
     })
     // console.log('this is outside comparechoices function...')
     // compareChoices(player1Choice, player2Choice);
+    DATABASE.ref('/players/1').on("child_added", function (snapshot) {
+        // Log everything that's coming out of snapshot
+        console.log(snapshot.val());
 
+        player1Choice = snapshot.val().player1Choice;
+        //add to the HTML 
+        $('.player1-box').html(player1Choice);
 
-    function pullData(player) {
+        console.log('snapshot player1Choice: ' + player1Choice);
+        // compareChoices(player1Choice, player2Choice)
 
-        console.log('current players name - ' + player);
-        // Firebase watcher + initial loader HINT: .on("value")
-        let child = '';
+        console.log('player1 choice - ', player1Choice, 'player2Choice - ', player2Choice)
 
-        if (player === player1Name) {
-            DATABASE.ref('/player1').on("child_added", function (snapshot) {
-                // Log everything that's coming out of snapshot
-                //console.log(snapshot.val());
-                
-                player1Choice = snapshot.val().player1Choice;
-                //add to the HTML 
-                $('.player1-box').html(player1Choice);
+        if (typeof player1Choice === "string" && typeof player2Choice === "string") {
+            console.log("this is inside of... ");
 
-                console.log('snapshot player1Choice: ' + player1Choice);
-                // compareChoices(player1Choice, player2Choice)
-            })
-        } else if (player === player2Name) {
-            DATABASE.ref('/player2').on("child_added", function (snapshot) {
-                //console.log('snapshot player2Name: ' + snapshot.val().player2Name);
-
-                player2Choice = snapshot.val().player2Choice;
-                $('.player2-box').html(player2Choice);
-
-                console.log('snapshot player2Choice: ' + player2Choice);
-                // compareChoices(player1Choice, player2Choice)
-
-            })
-
-
-        } 
-        // else {
-        //     return;
-        // }
-        if (player1Choice !== '' && player2Choice !== '') {
             compareChoices(player1Choice, player2Choice)
         }
 
-    };
-    // , function (errorObject) {
-    //     console.log("Errors handled: " + errorObject.code);
+    })
+    DATABASE.ref('/players/2').on("child_added", function (snapshot) {
+        //console.log('snapshot player2Name: ' + snapshot.val().player2Name);
 
-    // }
+        player2Choice = snapshot.val().player2Choice;
+        $('.player2-box').html(player2Choice);
+
+        console.log('snapshot player2Choice: ' + player2Choice);
+        // compareChoices(player1Choice, player2Choice)
+
+        console.log('player1 choice - ', typeof player1Choice, 'player2Choice - ', typeof player2Choice)
+
+        if (typeof player1Choice === "string" && typeof player2Choice === "string") {
+            console.log("this is inside of... ");
+
+            compareChoices(player1Choice, player2Choice)
+        }
+    })
+
+
     function compareChoices(p1Choice, p2Choice) {
         console.log('this is inside comparechoices function...')
-        let r = 'rock';
-        let p = 'paper';
-        let s = 'scissor';
+
         let selection = p1Choice + '-' + p2Choice;
         console.log('selection... ' + selection)
 
         if (selection === 'rock-scissor' || selection === 'scissor-paper' || selection === 'paper-rock') {
             console.log('player 1 wins...' + p1Choice);
+            gameStatus.append(player1Name + ' WINS!!!');
         } else if (selection === 'rock-rock' || selection === 'scissor-scissor' || selection === 'paper-paper') {
             tie++;
-            console.log('it is a tie: ' + userChoice);
+            console.log('it is a tie: ', selection);
         } else if (selection === 'rock-paper' || selection === 'scissor-rock' || selection === 'paper-scissor') {
             losses++;
-            console.log('you lose: ' + userChoice);
+            console.log('player 2 wins...' + p2Choice);
+            gameStatus.append(player2Name + ' WINS!!!');
         }
     }
 
