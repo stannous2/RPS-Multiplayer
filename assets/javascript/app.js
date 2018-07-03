@@ -46,23 +46,23 @@ $(function () {
         //getting the initial player data from DB
 
         pullDataFromFirebase(DATABASE, 1);
-        
+
         console.log('current snapshot player name: --- ' + playerName)
         if (playerName === '') {
-            
+
             //let player1Name = player1Div.html($('.name-box').val());
             player1Div.html($('.name-box').val());
             player1Name = player1Div.html();
             console.log('player 1 name - ' + player1Name);
-            
+
             generateGameOptions(player1Div);
-            
+
             //reset the input box after a player clicks start
             $('.name-box').val('');
-            
+
             //create a player each player
             playerId = 1
-            
+
             writePlayerData(DATABASE, playerId, player1Name, '', 0, 0)
             pullDataFromFirebase(DATABASE, 1);
             console.log('currentSnapshot.player 1 Name - ' + playerName);
@@ -89,16 +89,23 @@ $(function () {
     $('.player1-box').on('click', 'button', function () {
         player1Choice = $(this).val();
         console.log('player 1 just selected ...' + player1Choice);
-        // $('.player1-box').html(player1Choice);
+        // $('.player1-box').html(playerChoice);
 
         activePlayer = player1Name;
         console.log('active player - ' + activePlayer);
 
         playerId = 1;
         updatePlayerData(DATABASE, playerId, player1Choice);
-        pullDataFromFirebase(DATABASE, playerId)
-
+        pullDataFromFirebase(DATABASE, playerId);
+        $('.player1-box').html(playerChoice);
         console.log('snapshot player 1 choice --- ' + playerChoice);
+
+        player1Choice = player1Choice;
+
+        //run the compareresults function
+        if (player1Choice !== '' && player2Choice !== '') {
+            compareChoices(player1Choice, player2Choice);
+        }
 
     })
 
@@ -113,53 +120,18 @@ $(function () {
         playerId = 2;
         updatePlayerData(DATABASE, playerId, player2Choice);
         pullDataFromFirebase(DATABASE, playerId);
+        $('.player2-box').html(playerChoice);
         console.log('snapshot player 2 choice --- ' + playerChoice);
+
+        player2Choice = playerChoice;
+
+        //run the compareresults function
+        if (player1Choice !== '' && player2Choice !== '') {
+            compareChoices(player1Choice, player2Choice);
+        }
 
     })
 
-
-    //console.log('this is before go inside the compare choices function...')
-    // compareChoices(player1Choice, player2Choice);
-    // DATABASE.ref('/players/1').on('child_changed', function (snapshot) {
-    //     // Log everything that's coming out of snapshot
-    //     //console.log('this is the printout of whole snapshot ' + snapshot.val());
-    //     // console.log('this is the printout of snapshot-losses ' + snapshot.val().losses);
-    //     // console.log('this is the printout of snapshot-wins ' + snapshot.val().wins);
-    //     // console.log('this is the printout of snapshot-name ' + snapshot.val().name);
-
-    //     // p1SnapshotChoice = snapshot.val().choice;
-    //     // console.log('this is the PLAYER1 of snapshot-choice : ' + p1SnapshotChoice);
-
-    //     //add to the HTML 
-    //     $('.player1-box').html(snapshot.val().choice);
-
-
-    //     if (typeof p1SnapshotChoice === "string" && typeof p2SnapshotChoice === "string") {
-    //         console.log("this is inside of the player 1 loop... ");
-
-    //         compareChoices(p1SnapshotChoice, p2SnapshotChoice)
-    //     }
-
-    // })
-
-    // DATABASE.ref('/players/2').on("child_changed", function (snapshot) {
-    //     console.log('snapshot player2Name: ' + snapshot.val().player2Name);
-
-    //     p2SnapshotChoice = snapshot.val().choice;
-    //     console.log('this is the PLAYER2 of snapshot-choice : ' + p2SnapshotChoice);
-
-    //     //append to the HTML
-    //     $('.player2-box').html(p2SnapshotChoice);
-
-    //     console.log('snapshot player2Choice: ' + p2SnapshotChoice);
-    //     // compareChoices(player1Choice, player2Choice)
-
-    //     if (typeof p1SnapshotChoice === "string" && typeof p2SnapshotChoice === "string") {
-    //         console.log("this is inside of the player 2 loop... ");
-
-    //         compareChoices(p1SnapshotChoice, p2SnapshotChoice)
-    //     }
-    // })
 
     //######################### Functions ###############################################
 
@@ -186,15 +158,8 @@ $(function () {
             playerChoice = snapshot.val().choice;
             playerWins = snapshot.val().wins;
             playerLosses = snapshot.val().losses;
-
-            console.log('PLAYER ' + playerId + ' printout of snapshot-name ' + playerName);
-            console.log('PLAYER ' + playerId + ' printout of snapshot-choice ' + playerChoice);
-            console.log('PLAYER ' + playerId + ' printout of snapshot-losses ' + playerLosses);
-            console.log('PLAYER ' + playerId + ' printout of snapshot-wins ' + playerWins);
-
-            
         });
-       
+
     }
 
 
@@ -206,14 +171,14 @@ $(function () {
 
         if (selection === 'rock-scissor' || selection === 'scissor-paper' || selection === 'paper-rock') {
             console.log('player 1 wins...' + p1Choice);
-            gameStatus.append(player1Name + ' WINS!!!');
+            gameStatus.append('Player ' + player1Name + ' WINS!!!');
         } else if (selection === 'rock-rock' || selection === 'scissor-scissor' || selection === 'paper-paper') {
             tie++;
             console.log('it is a tie: ', selection);
         } else if (selection === 'rock-paper' || selection === 'scissor-rock' || selection === 'paper-scissor') {
             losses++;
             console.log('player 2 wins...' + p2Choice);
-            gameStatus.append(player2Name + ' WINS!!!');
+            gameStatus.append('Player ' + player2Name + ' WINS!!!');
         }
     }
 
