@@ -50,3 +50,7 @@ button {
     font-size: 25px;
     
 }
+.p1-optionsDiv {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+        crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css" />
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+</head>
+
+<body>˜
+    <div class="container">
+        <nav class="navbar navbar-dark bg-info">
+            <span class="mb-0 h3">Rock Paper Scissor</span>
+        </nav>
+        <div class="title">
+            <input type="text" class="col-sm-9 name-box" placeholder="Name">
+            <button type="submit" class="btn btn-info btn-sm col-sm-3" id="start-button">Start</button>
+            <h2></h2>
+            <p></p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="p1-nameDiv">Waiting for Player 1</div>
+                <div class="p1-optionsDiv"></div>
+                <div class="p1-stats"></div>
+                
+            </div>
+            <div class="col-sm-4 status-box" id="game-status">
+
+            </div>
+            <div class="col-sm-4 player2-box" id="player2">
+                Waiting for Player 2
+            </div>
+        </div>
+
+        <div class="chat-area"></div>
+        <div class="send-box">
+            <input type="text" class="col-sm-10" id="message-input">
+            <button type="submit" class="btn btn-info btn-sm send-btn col-sm-2">Send</button>
+        </div>
+
+    </div>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="./assets/javascript/app2.js"></script>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 $(function() {
-    let player1Div = $('#player1');
+    // let player1Div = $('.p1-optionsDiv');
     let player1Choice = '';
     let player2Div = $('#player2');
     let player2Choice = '';
@@ -39,10 +39,10 @@ $(function() {
         console.log('current snapshot player name: --- ' + playerName)
         if (playerName === '') {
             //let player1Name = player1Div.html($('.name-box').val());
-            player1Div.html($('.name-box').val());
-            player1Name = player1Div.html();
-            console.log('player 1 name - ' + player1Name);
-            //generateGameOptions(player1Div);
+            $('.p1-nameDiv').html($('.name-box').val());
+            player1Name = $('.p1-nameDiv').html();
+            // console.log('player 1 name - ' + player1Name);
+            
             //reset the input box after a player clicks start
             $('.name-box').val('');
             //create a player each player
@@ -63,7 +63,7 @@ $(function() {
             // console.log('current Snapshot.player 2 Name - ' + playerName);
         }
     });
-    $('.player1-box').on('click', 'button', function() {
+    $('.p1-optionsDiv').on('click', 'button', function() {
         player1Choice = $(this).val();
         //console.log('player 1 just selected ...' + player1Choice);
         // $('.player1-box').html(playerChoice);
@@ -73,9 +73,9 @@ $(function() {
         pullDataFromFirebase(DATABASE, playerId);
 
         
-        //$('.player1-box').html(playerChoice);
+        $('.p1-optionsDiv').html(playerChoice);
         console.log('snapshot player 1 choice --- ' + playerChoice);
-        player1Choice = player1Choice;
+        //player1Choice = player1Choice;
         //run the compareresults function
         if (player1Choice !== '' && player2Choice !== '') {
             compareChoices(player1Choice, player2Choice);
@@ -91,7 +91,7 @@ $(function() {
         pullDataFromFirebase(DATABASE, playerId);
 
 
-        //$('.player2-box').html(playerChoice);
+        $('.player2-box').html(playerChoice);
         console.log('snapshot player 2 choice --- ' + playerChoice);
         player2Choice = playerChoice;
         //run the compareresults function
@@ -101,23 +101,23 @@ $(function() {
     })
         DATABASE.ref('/players/1').on('value', function(snapshot) {
         player1Name = snapshot.val().name;
-        player1Choice = snapshot.val().choice;
+        //player1Choice = snapshot.val().choice;
         player1Wins = snapshot.val().wins;
         player1Losses = snapshot.val().losses;
 
         console.log('player1Name from the listener - ' + player1Name)
-        $('.player1-box').html(player1Name);
+        $('.p1-nameDiv').html(player1Name);
         if (player1Name !== ''){
-            generateGameOptions(player1Div);
+            generateGameOptions($('.p1-optionsDiv'));
         }
-        if(player1Choice !== ''){
-            $('.player1-box').html(player1Choice);
-        }
+        // if(player1Choice !== ''){    
+        //     $('.player1-box').html(player1Choice);
+        // }
 
     });
         DATABASE.ref('/players/2').on('value', function(snapshot) {
         player2Name = snapshot.val().name;
-        player2Choice = snapshot.val().choice;
+        //player2Choice = snapshot.val().choice;
         player2Wins = snapshot.val().wins;
         player2Losses = snapshot.val().losses;
         
@@ -125,9 +125,9 @@ $(function() {
         if (player2Name !== ''){
             generateGameOptions(player2Div);
         }
-        if(player2Choice !== ''){
-            $('.player2-box').html(player2Choice);
-        }
+        // if(player2Choice !== ''){
+        //     $('.player2-box').html(player2Choice);
+        // }
         
     });
     //######################### Functions ###############################################
@@ -180,12 +180,14 @@ $(function() {
         rock.attr('type', 'button');
         rock.text('Rock');
         player.append(rock);
+
         let paper = $('<button class=btn-secondary>');
         paper.attr('id', 'pbutton');
         paper.attr('value', 'paper');
         paper.attr('type', 'button');
         paper.text('Paper');
         player.append(paper);
+
         let scissor = $('<button class=btn-secondary>');
         scissor.attr('id', 'sbutton');
         scissor.attr('value', 'scissor');
