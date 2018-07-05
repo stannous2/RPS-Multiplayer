@@ -50,7 +50,7 @@ button {
     font-size: 25px;
     
 }
-.p1-optionsDiv {
+.p1-optionsDiv, .p2-optionsDiv {
     display: flex;
     flex-direction: column;
 }

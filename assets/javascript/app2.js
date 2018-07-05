@@ -1,7 +1,7 @@
 $(function() {
     // let player1Div = $('.p1-optionsDiv');
     let player1Choice = '';
-    let player2Div = $('#player2');
+    // let player2Div = $('#player2');
     let player2Choice = '';
     let gameStatus = $('#game-status');
     let player1Name = '';
@@ -29,8 +29,8 @@ $(function() {
     const DATABASE = firebase.database();
 
     //reset player info before game starts
-    writePlayerData(DATABASE, 1, '', '', 0, 0);
-    writePlayerData(DATABASE, 2, '', '', 0, 0);
+    writePlayerData(DATABASE, 1, '', '', wins, losses, tie);
+    writePlayerData(DATABASE, 2, '', '', wins, losses, tie);
 
     $('#start-button').on('click', function() {
         event.preventDefault();
@@ -38,44 +38,43 @@ $(function() {
         pullDataFromFirebase(DATABASE, 1);
         console.log('current snapshot player name: --- ' + playerName)
         if (playerName === '') {
-            //let player1Name = player1Div.html($('.name-box').val());
+            //display enterred name on HTML
             $('.p1-nameDiv').html($('.name-box').val());
             player1Name = $('.p1-nameDiv').html();
-            // console.log('player 1 name - ' + player1Name);
             
-            //reset the input box after a player clicks start
+            //reset the input box after player clicks start
             $('.name-box').val('');
+
             //create a player each player
             playerId = 1
-            writePlayerData(DATABASE, playerId, player1Name, '', 0, 0)
-            // pullDataFromFirebase(DATABASE, 1);
-            // console.log('currentSnapshot.player 1 Name - ' + playerName);
+            writePlayerData(DATABASE, playerId, player1Name, '', wins, losses, tie)
+            
         } else if (playerName !== '') {
-            player2Div.html($('.name-box').val());
-            player2Name = player2Div.html();
+
+            //display enterred name on HTML
+            $('.p2-nameDiv').html($('.name-box').val());
+            player2Name = $('.p2-nameDiv').html();
+            
             console.log('player 2 name - ' + player2Name);
-            //generateGameOptions(player2Div);
-            //reset the input box
+            
+            //reset the input box after player clicks start
             $('.name-box').val('');
+
             playerId = 2;
-            writePlayerData(DATABASE, playerId, player2Name, '', 0, 0);
-            // pullDataFromFirebase(DATABASE, 2);
-            // console.log('current Snapshot.player 2 Name - ' + playerName);
+            writePlayerData(DATABASE, playerId, player2Name, '', wins, losses, tie);
+            
         }
     });
     $('.p1-optionsDiv').on('click', 'button', function() {
         player1Choice = $(this).val();
-        //console.log('player 1 just selected ...' + player1Choice);
-        // $('.player1-box').html(playerChoice);
         
         playerId = 1;
         updatePlayerData(DATABASE, playerId, player1Choice);
         pullDataFromFirebase(DATABASE, playerId);
 
-        
         $('.p1-optionsDiv').html(playerChoice);
         console.log('snapshot player 1 choice --- ' + playerChoice);
-        //player1Choice = player1Choice;
+        
         //run the compareresults function
         if (player1Choice !== '' && player2Choice !== '') {
             compareChoices(player1Choice, player2Choice);
@@ -83,30 +82,27 @@ $(function() {
     })
     $('.player2-box').on('click', 'button', function() {
         player2Choice = $(this).val();
-        console.log('player 2 just selected ...' + player2Choice);
-        // $('.player2-box').html(player2Choice);
         
         playerId = 2;
         updatePlayerData(DATABASE, playerId, player2Choice);
         pullDataFromFirebase(DATABASE, playerId);
 
-
-        $('.player2-box').html(playerChoice);
-        console.log('snapshot player 2 choice --- ' + playerChoice);
-        player2Choice = playerChoice;
         //run the compareresults function
         if (player1Choice !== '' && player2Choice !== '') {
             compareChoices(player1Choice, player2Choice);
         }
     })
+
         DATABASE.ref('/players/1').on('value', function(snapshot) {
         player1Name = snapshot.val().name;
-        //player1Choice = snapshot.val().choice;
         player1Wins = snapshot.val().wins;
         player1Losses = snapshot.val().losses;
+        player1Tie = snapshot.val().tie;
 
         console.log('player1Name from the listener - ' + player1Name)
+
         $('.p1-nameDiv').html(player1Name);
+
         if (player1Name !== ''){
             generateGameOptions($('.p1-optionsDiv'));
         }
@@ -117,26 +113,29 @@ $(function() {
     });
         DATABASE.ref('/players/2').on('value', function(snapshot) {
         player2Name = snapshot.val().name;
-        //player2Choice = snapshot.val().choice;
         player2Wins = snapshot.val().wins;
         player2Losses = snapshot.val().losses;
-        
-        $('.player2-box').html(player2Name);
-        if (player2Name !== ''){
-            generateGameOptions(player2Div);
-        }
+        player2Tie = snapshot.val().tie;
+
+        $('.p2-nameDiv').html(player2Name);
+        generateGameOptions($('.p2-optionsDiv'));
+
+        // if (player2Name !== ''){
+        // }
+
         // if(player2Choice !== ''){
         //     $('.player2-box').html(player2Choice);
         // }
         
     });
     //######################### Functions ###############################################
-    function writePlayerData(database, playerId, playerName, playerChoice, playerLosses, playerWins) {
+    function writePlayerData(database, playerId, playerName, playerChoice, playerWins, playerLosses, playerTie) {
         database.ref('/players/' + playerId).set({
             name: playerName,
             choice: playerChoice,
             wins: playerWins,
-            losses: playerLosses
+            losses: playerLosses,
+            tie: playerTie
         });
     }
 
